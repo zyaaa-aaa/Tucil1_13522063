@@ -101,10 +101,10 @@ def find_sequence(sequences, paths):
 
 def find_optimal(maxreward, paths):
     max_num = maxreward[0]
-    max_index = -1
-    for i, num in enumerate(maxreward):
-        if num > max_num:
-            max_num = num
+    max_index = 0
+    for i in range(len(maxreward)):
+        if maxreward[i] > max_num:
+            max_num = maxreward[i]
             max_index = i
     if max_num == 0:
         paths[max_index] = ''
@@ -168,7 +168,9 @@ def save_solution(file_name, max_reward, max_sequence, max_coordinates, executio
                         else:
                             file.write(sequence[i])
                 file.write("\n")
-            file.write("\n")    
+            file.write("\n")
+        if (max_num == 0):
+            file.write("Tidak ada solusi."+'\n') 
         file.write(str(max_reward))
         file.write("\n")
         for i in range(len(max_sequence)):
@@ -235,6 +237,8 @@ while(1 <= choice <= 3 and stop_program == False):
         max_num, path, coor = (find_optimal(max_reward, paths))
         path, coor = optimize(path, sequences, max_num, coor)
         print("=======================================")
+        if (max_num == 0):
+            print("Tidak ada solusi.")
         print(max_num)
         for i in range(len(path)):
             if i == len(path) - 1:
