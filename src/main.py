@@ -134,6 +134,7 @@ def optimize(path, sequences, initreward, coor):
             return path, coor
         while(reward == initreward):
             temp = path[:-2]
+            tempcoor = coor[:-2]
             reward = 0
             for i in range(len(sequences)):
                 occur = temp.count(sequences[i])
