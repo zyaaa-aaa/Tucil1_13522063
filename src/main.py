@@ -89,27 +89,27 @@ def all_sequence(sequences, path):
         return False
 
 def find_sequence(sequences, paths):
-    maxreward = []
+    initreward = []
     for path in paths:
         reward = 0
         for i in range(len(sequences)):
             occur = path.count(sequences[i])
             if occur >= 1:
                 reward += rewards[i]
-        maxreward.append(reward)
-    return maxreward
+        initreward.append(reward)
+    return initreward
 
-def find_optimal(maxreward, paths):
+def find_optimal(maxreward, paths, coors):
     max_num = maxreward[0]
     max_index = 0
     for i in range(len(maxreward)):
-        if maxreward[i] > max_num:
+        if maxreward[i] > max_num or (maxreward[i] == max_num and len(paths[i]) < len(paths[max_index])):
             max_num = maxreward[i]
             max_index = i
     if max_num == 0:
         paths[max_index] = ''
-        coordinate[max_index] = ''
-    return max_num, paths[max_index], coordinate[max_index]
+        coors[max_index] = ''
+    return max_num, paths[max_index], coors[max_index]
 
 def max_length_sequence(sequences):
     maxlen = -1
@@ -118,21 +118,13 @@ def max_length_sequence(sequences):
             maxlen = len(sequence)
     return maxlen
 
-def optimize(path, sequences, initreward, coor):
-    if (len(path) >= max_length_sequence(sequences)+2):
-        temp = path[:-2]
-        tempcoor = coor[:-2]
-        reward = 0
-        for i in range(len(sequences)):
-            occur = temp.count(sequences[i])
-            if occur >= 1:
-                reward += rewards[i]
-        if reward == initreward:
-            path = temp
-            coor = tempcoor
-        else:
-            return path, coor
-        while(reward == initreward):
+def optimize(paths, sequences, initreward, coordinates):
+    op_path = []
+    op_coor = []
+    for k in range(len(paths)):
+        path = paths[k]
+        coor = coordinates[k]
+        if (len(path) >= max_length_sequence(sequences)+2) and init_reward[k] != 0:
             temp = path[:-2]
             tempcoor = coor[:-2]
             reward = 0
@@ -140,13 +132,30 @@ def optimize(path, sequences, initreward, coor):
                 occur = temp.count(sequences[i])
                 if occur >= 1:
                     reward += rewards[i]
-            if reward == initreward:
+            if reward == initreward[k]:
                 path = temp
                 coor = tempcoor
             else:
-                return path, coor
-    else:
-        return path, coor
+                op_path.append(path)
+                op_coor.append(coor)
+            while(reward == initreward[k]):
+                temp = path[:-2]
+                tempcoor = coor[:-2]
+                reward = 0
+                for i in range(len(sequences)):
+                    occur = temp.count(sequences[i])
+                    if occur >= 1:
+                        reward += rewards[i]
+                if reward == initreward[k]:
+                    path = temp
+                    coor = tempcoor
+                else:
+                    op_path.append(path)
+                    op_coor.append(coor)
+        else:
+            op_path.append(path)
+            op_coor.append(coor)
+    return op_path, op_coor
 
 def save_solution(file_name, max_reward, max_sequence, max_coordinates, execution_time):
     with open(file_name, 'w') as file:
@@ -219,9 +228,9 @@ while(1 <= choice <= 3 and stop_program == False):
 
         start_time = time.time()
         paths, coordinate = generate_path(0, 0, [], [], [], buffer_size, [], matrix_size, matrix, [])
-        max_reward = find_sequence(sequences, paths)
-        max_num, path, coor = (find_optimal(max_reward, paths))
-        path, coor = optimize(path, sequences, max_num, coor)
+        init_reward = find_sequence(sequences, paths)
+        op_path, op_coor = optimize(paths, sequences, init_reward, coordinate)
+        max_num, path, coor = find_optimal(init_reward, op_path, op_coor)
         print("=======================================")
         if (max_num == 0):
             print("Tidak ada solusi.")
@@ -251,6 +260,7 @@ while(1 <= choice <= 3 and stop_program == False):
                 relative_path_save = "test/"+file_name_save
             save_solution(relative_path_save, max_num, path, coor, str((end_time-start_time)*1000))
             print("Your file has been saved!")
+        print("=======================================")
         print("Cyberpunk 2077 Breach Protocol Solution")
         print("=======================================")
         print("1. Input Text File")
@@ -261,7 +271,7 @@ while(1 <= choice <= 3 and stop_program == False):
         print("=======================================")
     else:
         print("=======================================")
-        print("             Thank You!                ")
+        print("              Thank You!               ")
         print("=======================================")
         print("         Shazya Audrea Taufik          ")
         print("               13522063                ")
