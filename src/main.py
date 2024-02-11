@@ -147,50 +147,35 @@ def optimize(path, sequences, initreward, coor):
     else:
         return path, coor
 
-def save_solution(file_name, max_reward, max_sequence, max_coordinates, execution_time, choice, matrix, sequences, matrix_size, rewards):
+def save_solution(file_name, max_reward, max_sequence, max_coordinates, execution_time):
     with open(file_name, 'w') as file:
-        if (choice == 2):
-            for i in range(matrix_size[1]):
-                for j in range(matrix_size[0]):
-                    file.write(matrix[i][j]+" ")
-                file.write("\n")
-            file.write("\n")
-
-            for j in range(len(sequences)):
-                sequence = sequences[j]
-                for i in range(len(sequence)):
-                    if i == len(sequence) - 1:
-                        file.write(sequence[i]+'\n')
-                        file.write(str(rewards[j])+'\n')
-                    else:
-                        if i % 2 == 1:
-                            file.write(sequence[i]+' ')
-                        else:
-                            file.write(sequence[i])
-                file.write("\n")
-            file.write("\n")
         if (max_num == 0):
             file.write("Tidak ada solusi."+'\n') 
-        file.write(str(max_reward))
-        file.write("\n")
-        for i in range(len(max_sequence)):
-            if i == len(max_sequence) - 1:
-                file.write(max_sequence[i])
-            else:
-                if i % 2 == 1:
-                    file.write(max_sequence[i]+' ')
-                else:
+            file.write(str(max_reward)+'\n')
+            file.write("\n")
+            file.write(execution_time+" ms")
+        else:
+            file.write(str(max_reward))
+            file.write("\n")
+            for i in range(len(max_sequence)):
+                if i == len(max_sequence) - 1:
                     file.write(max_sequence[i])
-        file.write("\n")
-        for i in range(len(max_coordinates)):
-            if i % 2 == 0:
-                file.write(str(max_coordinates[i])+', ')
-            else:
-                file.write(str(max_coordinates[i]))
-                file.write("\n")
-        file.write("\n")
-        file.write(execution_time+" ms")
+                else:
+                    if i % 2 == 1:
+                        file.write(max_sequence[i]+' ')
+                    else:
+                        file.write(max_sequence[i])
+            file.write("\n")
+            for i in range(len(max_coordinates)):
+                if i % 2 == 0:
+                    file.write(str(max_coordinates[i])+', ')
+                else:
+                    file.write(str(max_coordinates[i]))
+                    file.write("\n")
+            file.write("\n")
+            file.write(execution_time+" ms")
 
+#main program
 print("Cyberpunk 2077 Breach Protocol Solution")
 print("=======================================")
 print("1. Input Text File")
@@ -263,7 +248,7 @@ while(1 <= choice <= 3 and stop_program == False):
             while os.path.isfile(relative_path_save):
                 file_name_save = input("File name is taken, reenter your file name: ")
                 relative_path_save = "test/"+file_name_save
-            save_solution(relative_path_save, max_num, path, coor, str((end_time-start_time)*1000), choice, matrix, sequences, matrix_size, rewards)
+            save_solution(relative_path_save, max_num, path, coor, str((end_time-start_time)*1000))
             print("Your file has been saved!")
         print("Cyberpunk 2077 Breach Protocol Solution")
         print("=======================================")

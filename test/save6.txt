@@ -1,22 +1,4 @@
-AD AC 
-AC AC 
-AB AD 
-
-AC AD AD AD
-40
-
-AC AB AC
-16
-
-AD AC AB AB AC
-57
-
-AB AD AB AC AD
-78
-
-
 Tidak ada solusi.
 0
-
 
 0.1430511474609375 ms
